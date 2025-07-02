@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "feedType": "asyncapi_feed",
+  "type": "asyncapi_feed",
+  "feedView": "default",
+  "name": "Organisation",
+  "description": "Changes in a organisation",
+  "img": "https://cdn-icons-png.flaticon.com/128/1916/1916280.png",
+  "contributor": "James Taylor",
+  "github": "",
+  "domain": "healthcare",
+  "tags": "healthcare nems",
+  "lastUpdated": "2025-06-11T08:23:02.347Z",
+  "topic":"provideridentity/organisation/organisation/{verb}/0.1.0/{organisation_type}"
+}

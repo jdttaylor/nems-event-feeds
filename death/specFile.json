@@ -1,0 +1,1028 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "description": "Publish Death Notice (UAT)",
+      "url": "https://nems-test.services.health.nz:9443"
+    },
+    {
+      "description": "Cardiovascular Risk API (Production)",
+      "url": "https://nems.services.health.nz:9443"
+    }
+  ],
+  "info": {
+    "description": "This is the API used to publish a death event",
+    "version": "21.11.11.1017",
+    "title": "Publish Death Notice API",
+    "contact": {
+      "email": "Hg.Zhu@TeWhatuOra.govt.nz"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags": [
+    {
+      "name": "developers",
+      "description": "Operations available to regular developers"
+    }
+  ],
+  "paths": {
+    "/demongraphics/patient/death/": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success - blank response",
+            "headers": {
+              "Solace-Client-Name": {
+                "schema": {
+                  "type": "string",
+                  "example": "#rest-0544b0dbb71caf5d"
+                },
+                "description": "Client ID used for audit purposes."
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "information": {
+                      "type": "string",
+                      "description": "Contains further information as to why authorisation failed.",
+                      "example": "The API key supplied is not valid."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeathRequest"
+              }
+            }
+          },
+          "description": "Risk variables to use to Create Report"
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authentication",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "key",
+                "hmac",
+                "test"
+              ]
+            },
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "X-Forwarded-For",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/risk": {
+      "post": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "calculates cardiovascular risk based on the passed parameters",
+        "operationId": "calculateRisk",
+        "description": "Calculates the cardiovascular risk, based on the passed parameters which both specify the type of algorithm to use and the values for calculation.",
+        "responses": {
+          "200": {
+            "description": "risk calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultItem"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorItem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "information": {
+                      "type": "string",
+                      "description": "Contains further information as to why authorisation failed.",
+                      "example": "The API key supplied is not valid."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "information": {
+                      "type": "string",
+                      "description": "Contains further information as to why authorisation failed.",
+                      "example": "The API key supplied is not valid."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RiskItem"
+              }
+            }
+          },
+          "description": "Risk variables to use to calculate cardiovascular risk"
+        },
+        "parameters": [
+          {
+            "in": "header",
+            "name": "authentication",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "key",
+                "hmac",
+                "test"
+              ]
+            },
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "X-Forwarded-For",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "api-key",
+        "description": "The api key to use for `key` based authentication."
+      },
+      "HMACApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "hmac-api-key",
+        "description": "This is the API key that is supplied to you."
+      },
+      "HMACTimestamp": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "hmac-timestamp",
+        "description": "The timestamp of the time the HMAC is generated. The timestamp should be in the format yyyyMMhhmmss. The timestamp must be within 90 seconds of the server date/time when it is evaluated."
+      },
+      "HMACToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "hmac-token",
+        "description": "The token should be a number used uniquely with the api key within the last 120 seconds. The token is used to prevent replay attacks against the service."
+      },
+      "HMACSignature": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "hmac-signature",
+        "description": "You will be issued an API Secret Key. This key must be kept secret and will only be used to generate the Signature. The signature should be a base64 encoded string of the result of the SHA-384 of the api key, timestamp, token concatenated and you Api Secret Key, in the order"
+      }
+    },
+    "schemas": {
+      "Intervention": {
+        "type": "string",
+        "enum": [
+          "blood-glucose-levels-with-diabetes",
+          "diet",
+          "physical-activity",
+          "alcohol",
+          "medication-adherence-tips",
+          "medication-prescribing-advice",
+          "smoking-cessation",
+          "high-blood-pressure",
+          "high-cholesterol",
+          "weight-loss"
+        ]
+      },
+      "RiskItem": {
+        "type": "object",
+        "required": [
+          "major-version",
+          "algorithm-type",
+          "submission-type"
+        ],
+        "properties": {
+          "istest": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates that the submission is a test submission. Deprecated in favour of using the `test` value in the authentication header."
+          },
+          "major-version": {
+            "type": "string",
+            "title": "Algorithm Major Version",
+            "example": 4,
+            "minimum": 1,
+            "description": "The major version of the algorithm to use. Must be supplied."
+          },
+          "algorithm-type": {
+            "type": "string",
+            "title": "Algorithm Type",
+            "example": "general",
+            "description": "The type of algorithm to use. Must be supplied.",
+            "enum": [
+              "general",
+              "diabetes",
+              "public"
+            ]
+          },
+          "minor-version": {
+            "type": "string",
+            "title": "Algorithm Minor Version",
+            "minimum": 0,
+            "example": null,
+            "description": "The minor version of the algorithm to use to calculate risk. If omitted, the latest minor version will be used. Under normal circumstances you should not pass this parameter to ensure calculations are made with the latest version of the algorithm. Pass this value only if you need ot calculate risk based on a specific implementation. Minor versions represent updates to the algorithm without any changes to the algorithm interface (required parameters)."
+          },
+          "revision": {
+            "type": "string",
+            "title": "Algorithm Revision",
+            "example": null,
+            "minimum": 0,
+            "description": "The revision of the algorithm to use to calculate risk. If omitted, the latest revision will be used. Under normal circumstances, you should not pass this parameter to ensure calculations are made with the latest revision of the algorithm. Pass this value only if you need to calculate risk based on a specific revision. Revisions represent bug fixes to the algorithm."
+          },
+          "advice-years-offset": {
+            "title": "Advice Offset",
+            "type": "number",
+            "example": 20,
+            "description": "The number of years to offset risk calculations by when calculating advice. If not supplied, defaults to zero (calculate risk for advice as though it was applied today). Prior to this version of the API, the effective value of this variable is zero."
+          },
+          "advice-profile": {
+            "title": "Advice Profile",
+            "type": "string",
+            "example": "default",
+            "enum": [
+              "default",
+              "heart-foundation"
+            ],
+            "description": "The advice profile to use to calculate and present advice. Each profile contains advice scenarios and those scenarios are run against the passed values to determine modified risk if advice is followed. If not supplied, the 'default' profile is used.\n\nThe 'default' profile should be used for all advice scenarios for clinical calculation purposes. This advice profile returns the top 3 advice scenarios that will reduce the subjects risk the most.\n\nThe 'heart-foundation' profile should be used for public facing calculators. This advice profile will return all applicable advice scenarios regardless of risk modifications.\n"
+          },
+          "bmi": {
+            "title": "Body Mass Index",
+            "type": "number",
+            "example": 25,
+            "description": "An individual's body mass index (BMI) is calculated by weight in kilograms divided by height in metres squared (kg/m2). BMI is associated with CVD event risk independently of the presence of diabetes, blood pressure and lipid levels. BMI has been included in general population and diabetes primary prevention equations either as a categorical variable or continuous variable. If height and weight are supplied, BMI is not required as height and weight are used to derived the BMI value.\n\nIn the 'general' algorithm, if not supplied, a calculation is made based on an 'unknown' BMI; which is allowed for in the algorithm.\n\nIn the 'diabetes' algorithm, if not supplied, a calculation is made on the gender-specific mean BMI, as used by the algorithm implementation. This effectively negates any calculation based on BMI (neight adding or removing risk). Although technically BMI (or height and weight to derive BMI) are required by this algorithm, this variation allows for the calculation of BMI when it is unknown.\n"
+          },
+          "nhi": {
+            "type": "string",
+            "title": "National Health Index Identifier",
+            "example": "ABC1235",
+            "description": "The National Health Index of identifier for the patient to whom the passed clinical values belong. This value is required when the call is not a 'test' call."
+          },
+          "sex": {
+            "type": "string",
+            "title": "Biologic Sex",
+            "example": "female",
+            "enum": [
+              "female",
+              "male"
+            ],
+            "description": "A person's biological sex is an important predictor of a future CVD event, with men being at higher risk and demonstrating differing weightings of other risk factors within a multivariate risk prediction equation compared with women. Therefore biological sex, rather than sexual identity, is used in CVD risk prediction equations. However, in discussion between the clinician and the patient, a person treated on long-term oestrogens could be considered biologically female; a person on long-term testosterone could be considered biologically male. A value of 1 indicates the person is Female. A value of 0 indicates a person is Male."
+          },
+          "female": {
+            "type": "integer",
+            "title": "Female Flag",
+            "example": 1,
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates if the person's biological sex is Female.\n* `0` - Male\n* `1` - Female\n"
+          },
+          "age": {
+            "type": "integer",
+            "title": "Age at Calculation",
+            "example": 40,
+            "minimum": 18,
+            "maximum": 110,
+            "description": "Age is an important non-modifiable predictor of a CVD event. The primary prevention risk prediction equations were developed from a cohort of people aged 30 to 74 years who were eligible for CVD risk prediction according to the 2003 CVD risk assessment and management guidelines (and subsequent updates) (New Zealand Guidelines Group 2003). A risk calculation outside this age range will be an approximation but potentially useful. Clinical judgement is recommended. For risk calculation purposes, the personâ€™s actual age should be input."
+          },
+          "ethnicity": {
+            "type": "integer",
+            "title": "Ethnicity",
+            "minimum": 1,
+            "maximum": 99999,
+            "example": 21,
+            "description": "HISO 10001:2017 Ethnicity Data Protocols supports recording up to six ethnicities at level 4 (Ministry of Health 2017). It is assumed that self-reported ethnicity is collected appropriately in primary health care services, using the standard ethnicity question and coded as per Statistics New Zealand (Stats NZ) Ethnicity New Zealand Standard Classification 2005 v2.0.0. In the development of the CVD risk prediction equations, ethnicities were prioritised and aggregated into five ethnic categories, ordered as: (1) MÄori, (2) Pacific, (3) Indian/Other South Asian, (4) Chinese/Other Asian, (5) European/Other. For risk calculation purposes, it is recommended that putting ethnicity data into the template follow the same rule. That is, if a person self-identifies as being Chinese, European and MÄori, then they should be inputted as MÄori to the risk calculator. The only exception to this rule is if people self-identify as being both Fijian and Indian. From an epidemiological perspective when developing the equations, these individuals most closely resemble the risk profile of Indian and should be input as such."
+          },
+          "maori": {
+            "type": "integer",
+            "title": "Maori Ethnicity Flag",
+            "example": 1,
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates if the subject identifies their ethnicity as NZ Maori. This should be a prioritised ethnicity flag whereby normal Statistics NZ rules are applied and only the highest priority ethnicity is flagged. If this is set to 1, Pacific, Indian, or Chinese values should all be 0. This property is deprecated in favour of using the `ethnicity` property."
+          },
+          "pacific": {
+            "type": "integer",
+            "title": "Pacific Ethnicity Flag",
+            "example": 1,
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates if the subject identifies their ethnicity as Pacific. This should be a prioritised ethnicity flag whereby normal Statistics NZ rules are applied and only the highest priority ethnicity is flagged. If this is set to 1, maori, indian, chinese values should all be 0.This property is deprecated in favour of using the `ethnicity` property."
+          },
+          "indian": {
+            "type": "integer",
+            "title": "Indian Ethnicity Flag",
+            "example": 1,
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates if the subject identifies their ethnicity as Pacific. This should be a prioritised ethnicity flag whereby normal Statistics NZ rules are applied and only the highest priority ethnicity is flagged. If this is set to 1, maori, indian, chinese values should all be 0. This property is deprecated in favour of using the `ethnicity` property."
+          },
+          "chinese": {
+            "type": "integer",
+            "title": "Chinese Ethnicity Flag",
+            "example": 1,
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates if the subject identifies their ethnicity as Pacific. This should be a prioritised ethnicity flag whereby normal Statistics NZ rules are applied and only the highest priority ethnicity is flagged. If this is set to 1, maori, indian, chinese values should all be 0. This property is deprecated in favour of using the `ethnicity` property."
+          },
+          "dep": {
+            "type": "integer",
+            "title": "Socioeconomic Deprivation Quintile",
+            "example": 3,
+            "minimum": 1,
+            "maximum": 5,
+            "description": "The New Zealand Deprivation Index (NZDep) score is a measure for assessing socioeconomic status and is a significant predictor of CVD risk, independent of other risk factors. NZDep is a measure assigned to a patient's area of residence. The score is based on nine variables from the Census, reflecting eight dimensions of relative deprivation of census tracts (Salmond et al 2007). NZDep is updated with each Census (eg, 2006, 2013, 2018), so the index closest to the CVD risk calculation should be used if available. For CVD risk calculation, input NZDep according to quintile of deprivation (from 1 least deprived to 5 most deprived)."
+          },
+          "famhx": {
+            "type": "integer",
+            "title": "Family History of Premature CVD",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "A family history of premature ischaemic CVD in a parent or sibling is associated with an increased risk of a CVD event and included as a predictor in the primary prevention equations.\n\nNote change in age definition from previous CVD risk assessment and management guidelines\n\n* `0` - No family history of cardiovascular disease in first degree relative less than 50 years of age.\n* `1` - Family history of cardiovascular disease in first degree relative less than 50 years of age.\n"
+          },
+          "af": {
+            "title": "Atrial Fibrillation",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Atrial fibrillation (AF) is a common abnormal heart rhythm that increases the risk of stroke. AF is clinically diagnosed after electrocardiogram (ECG) confirmation. It is characterised by an irregularly irregular heart beat and may occur on and off (paroxysmal atrial fibrillation), or it may continue indefinitely (persistent or permanent atrial fibrillation). AF may  be a new finding or a long-term disorder. A value of 1 indicates confirmed atrial firbrillation by ECG."
+          },
+          "diab-type": {
+            "type": "integer",
+            "title": "Diabetes Type",
+            "minimum": 0,
+            "maximum": 3,
+            "description": "Diabetes is a chronic disease that occurs when the pancreas is not able to produce enough insulin or when the body cannot effectively use the insulin it makes. This leads to hyperglycaemia (raised glucose level in the blood), which over the long term can damage organs and tissues. It is an independent predictor of cardiovascular events.\n* `0` - No Diabetes\n* `1` - Type 1\n* `2` - Type 2\n* `3` - Diabetes Type Unknown\n"
+          },
+          "diab": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Flag used to indicate if the subject has diabetes. Deprecated in favour of using the diabetes-type property."
+          },
+          "sbp": {
+            "type": "integer",
+            "example": 80,
+            "minimum": 40,
+            "maximum": 310,
+            "description": "Systolic BP, the average of two seated measurements in mmHg taken on two separate occasions (at least 10 minutes apart). Blood pressure (BP) is typically recorded as having systolic and diastolic measurements in mmHg. The ideal BP for most individuals is likely to be below 120 mmHg systolic and 75 mmHg diastolic. Above this level, the risk of a CVD event increases continuously with increasing BP."
+          },
+          "hdl": {
+            "type": "integer",
+            "title": "TC/HDL Ratio",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "For CVD risk prediction, the non-fasting total cholesterol to high-density lipoprotein cholesterol ratio (TC/HDL) is a better predictor of CVD event risk than any of the other lipid fractions. This parameter takes precedence of the tc and hdlc values and over the high-chol value if supplied."
+          },
+          "high-chol": {
+            "type": "integer",
+            "title": "High TC/HDL ratio flag",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Used to indicate if a subject's TC/HDL ratio is high when the exact value of TC/HDL is unknown. This should generally not be used for clinical calculation purposes and is included mainly for public calculator use where an exact value may not be known as data is being input by a non-clinical person. When set to 1 this is equivalent of setting the TC/HDL ratio to 7, and when set to 0, equivalent of setting the TC/HDL ratio to 4. This flag is ignored if the hdl parameter is supplied, or if both tc and hdlc are supplied."
+          },
+          "obplm": {
+            "type": "integer",
+            "title": "On Blood Pressure Lowering Medication",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The patient has been prescribed one or more medications that lower blood pressure e.g., angiotensin-converting enzyme (ACE) inhibitors, angiotensin II receptor blocker (ARB), beta blockers, calcium channel blockers, thiazides and other BP-lowering medications â€“ in the previous six months"
+          },
+          "oatm": {
+            "type": "integer",
+            "title": "On Anti-thrombotic medication.",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Deprecated. Use both `onantiplatelet` and `onanticoagulant` properties instead."
+          },
+          "yearsdiagnosedt2d": {
+            "type": "integer",
+            "title": "Years Diagnosed with Diabetes",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "The longer the time a person has diabetes, the greater the risk of vascular disease. Duration of diabetes is included in the diabetes-specific primary prevention models."
+          },
+          "sc": {
+            "type": "integer",
+            "title": "Serum Creatinine",
+            "example": 25,
+            "minimum": 20,
+            "maximum": 5000,
+            "description": "Serum creatinine is a laboratory test for kidney function. It is used in the CKD-Epi Study equation to derive an estimated glomerular filtration rate (eGFR)."
+          },
+          "egfr": {
+            "type": "integer",
+            "title": "Estimated Glomerular Filtration Rate",
+            "description": "The estimated glomerular filtration rate (eGFR) is a measure of kidney function with normal levels being above 90 mL/min/1.73 m2. If the eGFR is consistently less than 30 mL/min/1.73 m2, then the individual has chronic kidney disease stage 4 or 5 (or chronic renal failure). At this level, they are estimated to have the CVD risk of someone with prior CVD and are excluded from having a risk score calculated using primary prevention equations. If less than 30, then the subject is deemed to not be appropriate for the calculation and a result with the clinically-high flag is returned."
+          },
+          "acr": {
+            "type": "integer",
+            "title": "Urinary albumin to creatinine ratio",
+            "example": 1,
+            "minimum": 0.1,
+            "maximum": 5650,
+            "description": "The 2018 CVD consensus statement recommends collecting a urinary albumin to creatinine ratio (ACR), also known as urinary microalbumin, at least annually for all people with diagnosed diabetes. This test helps identify kidney disease that can occur as a complication of diabetes. If a person has an ACR consistently above 30mg/mmol, they are diagnosed as having overt diabetic nephropathy or macroalbuminuria. At this level, they will have the CVD risk of someone with prior CVD and are excluded from having a risk score calculated using primary prevention equations. If an ACR of 30 or over is supplied, the subject is not considered appropriate for the calculation and a result with the clinically-high flag is returned."
+          },
+          "hba1c": {
+            "type": "integer",
+            "title": "HbA1c",
+            "example": 25,
+            "minimum": 20,
+            "maximum": 5000,
+            "description": "HbA1c is a measure of glycated haemoglobin and is used for screening for diabetes or monitoring glycaemic control for people with diabetes."
+          },
+          "ollm": {
+            "type": "integer",
+            "title": "On Lipid Lower Medication",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The patient has been prescribed one or more medications that lower lipids (statins or other medications) in the previous six months."
+          },
+          "oohm": {
+            "type": "integer",
+            "title": "On Oral Hypoglycemic Medication",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The patient has been prescribed one or more medications that are taken orally to lower blood glucose."
+          },
+          "oim": {
+            "type": "integer",
+            "title": "On Insulin Medication",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Use the `diabetes-medication` property instead."
+          },
+          "height": {
+            "type": "number",
+            "title": "Height (m)",
+            "example": 1.7,
+            "minimum": 1,
+            "maximum": 2.3,
+            "description": "Subject's height in metres to calculate a body mass index (BMI)."
+          },
+          "weight": {
+            "type": "integer",
+            "title": "Weight (kg)",
+            "example": 90,
+            "minimum": 30,
+            "maximum": 350,
+            "description": "Weight in kilograms to calculate a body mass index (BMI)."
+          },
+          "onanticoagulants": {
+            "type": "integer",
+            "title": "On Anti-coagulant medication",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The patient has been prescribed one or more medications that are used as anticoagulant agents (eg, warfarin, dabigatran) in the previous six months."
+          },
+          "onantiplatelet": {
+            "type": "integer",
+            "title": "On Anti-platelet Medication",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "The patient has been prescribed one or more medications that are used as antiplatelet agents (eg, aspirin, clopidogrel) in the previous six months."
+          },
+          "smoking-status": {
+            "type": "integer",
+            "title": "Smoking Status",
+            "minimum": 0,
+            "maximum": 2,
+            "description": "This variable records smoking status and refers primarily to cigarette smoking. The previous equation used in the New Zealand CVD guidelines was derived from the Framingham Heart study and included people who had recently quit smoking within the previous 12 months as having an equivalent risk as current smokers. The new primary prevention equations have demonstrated that all ex-smokers (less than or greater than 12 months) have an equivalent risk after adjusting for other risk factors.\n\n* `0` - Never smoked tobacco\n* `1` - Ex-smoker or Ex-smoker for less than one year\n* `2` - Smoker\n"
+          },
+          "exsmoker": {
+            "type": "integer",
+            "title": "Ex Smoker",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates that the person is an ex-smoker. Deprecated in favour of using the `smoking-status` property."
+          },
+          "smoker": {
+            "type": "integer",
+            "title": "Smoker",
+            "minimum": 0,
+            "maximum": 1,
+            "deprecated": true,
+            "description": "Indicates that the person is a current smoker. If set to a value of `1`, `exsmoker` property should be `0`. Deprecated in favour of using the `smoking-status` property."
+          },
+          "submission-type": {
+            "type": "string",
+            "example": "whatif",
+            "description": "Indicates if the passed submission is a calculation based on a what-if type scenariou or intermediary calculation, or whether it is the actual calculation of subject risk based on actual values. If not supplied, the submission is assumed to be an actual submission.\n\n* `whatif` - What If calculation, does not use actual values from subject\n* `actual` - Actual calculation of risk, actual values from subject\n"
+          },
+          "tc": {
+            "type": "number",
+            "title": "Total Cholesterol",
+            "example": 1.5,
+            "minimum": 1,
+            "maximum": 103.6,
+            "description": "A single non-fasting total cholesterol (TC) and high-density lipoprotein cholesterol (HDL) test is required to calculate a TC/HDL ratio in the primary prevention equations."
+          },
+          "hdlc": {
+            "type": "number",
+            "title": "High-density lipoprotein cholesterol",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 51.8,
+            "description": "For CVD risk prediction, the non-fasting total cholesterol to high-density lipoprotein cholesterol ratio (TC/HDL) is a better predictor of CVD event risk than any of the other lipid fractions."
+          },
+          "diabetes-medication": {
+            "type": "integer",
+            "title": "Diabetes Medication",
+            "description": "Indicates if the subject is on medications used to support glycaemic control in people with diabetes. Used as a binary flag property to represent patients that are on multiple medications. Add values to indicate more than one medication(e.g. if subject is on Metformin and Insulin pass a value of 5 (1 + 4)).\n\n* `0` - None\n* `1` - Metformin\n* `2` - Other oral hypoglycaemic medications\n* `4` - Insulin\n"
+          },
+          "prior-cvd": {
+            "type": "integer",
+            "title": "Prior Cardiovascular Disease",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-angina": {
+            "type": "integer",
+            "title": "Prior Angina",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-mi": {
+            "type": "integer",
+            "title": "Prior Myocardial Infarction",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-pci": {
+            "type": "integer",
+            "title": "Prior Percutaneous Coronary Intervention",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-cabg": {
+            "type": "integer",
+            "title": "Prior Coronary Artery Bypass Graft",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-is": {
+            "type": "integer",
+            "title": "Prior Ischaemic Stroke",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-tia": {
+            "type": "integer",
+            "title": "Prior Transient Ischaemic Attack",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "prior-pvd": {
+            "type": "integer",
+            "title": "Prior Peripheral Vascular Disease",
+            "description": "If a prior CVD condition or procedure is present, then individuals are excluded from CVD risk assessment using the primary prevention equations. However, these conditions and procedures are included in the table below as they need to be explicitly reported at the time of CVD risk assessment and will be variables within future secondary prevention equations. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "excluded": {
+            "type": "integer",
+            "title": "Prior Cardiovascular Disease",
+            "description": "Indicates that the subject has conditions or findings that meet exclusion criteria for CVD risk calculation via primary prevention equations (both general population and diabetes-specific equations). These disorders are associated with CVD event risks similar to those with prior CVD and need to be explicitly reported at the time of CVD risk assessment. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "heart-failure": {
+            "type": "integer",
+            "title": "Heart Failure",
+            "description": "Indicates that the subject has conditions or findings that meet exclusion criteria for CVD risk calculation via primary prevention equations (both general population and diabetes-specific equations). These disorders are associated with CVD event risks similar to those with prior CVD and need to be explicitly reported at the time of CVD risk assessment. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "fhc": {
+            "type": "integer",
+            "title": "Familial Hypercholesterolaemia",
+            "description": "Indicates that the subject has conditions or findings that meet exclusion criteria for CVD risk calculation via primary prevention equations (both general population and diabetes-specific equations). These disorders are associated with CVD event risks similar to those with prior CVD and need to be explicitly reported at the time of CVD risk assessment. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "renal-failure": {
+            "type": "integer",
+            "title": "Renal Failure",
+            "description": "Indicates that the subject has conditions or findings that meet exclusion criteria for CVD risk calculation via primary prevention equations (both general population and diabetes-specific equations). These disorders are associated with CVD event risks similar to those with prior CVD and need to be explicitly reported at the time of CVD risk assessment. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "odn": {
+            "type": "integer",
+            "title": "Overt Diabetic Nephropathy",
+            "description": "Indicates that the subject has conditions or findings that meet exclusion criteria for CVD risk calculation via primary prevention equations (both general population and diabetes-specific equations). These disorders are associated with CVD event risks similar to those with prior CVD and need to be explicitly reported at the time of CVD risk assessment. Presently a result is returned with the clinically-high flag set to 1."
+          },
+          "provider-code": {
+            "type": "string",
+            "title": "Common Person Number",
+            "example": "18ABCD",
+            "description": "HPI Identifiers for Common Person Number (CPN)"
+          },
+          "facility-code": {
+            "type": "string",
+            "title": "Facility Number",
+            "example": "FB9964-G",
+            "description": "HPI Identifiers for Facility"
+          }
+        }
+      },
+      "ErrorItem": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "A description of the error.",
+            "example": "The value you have supplied for your age is not valid. It must be between 18 and 110."
+          },
+          "information": {
+            "type": "object",
+            "properties": {
+              "error-type": {
+                "type": "string",
+                "description": "Describes the type of error, either 'missing' or 'out-of-range'.",
+                "example": "out-of-range"
+              },
+              "variable-name": {
+                "type": "string",
+                "description": "The name of the variable for which has caused the bad request.",
+                "example": "age"
+              }
+            }
+          }
+        }
+      },
+      "DeathRequest": {
+        "type": "object",
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "description": "the URL for the patient resource",
+            "example": "https://api.hip-uat.digital.health.nz/fhir/nhi/v1/Patient/ZAT2348"
+          },
+          "deathDate": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2016-02-18T00:00:00.000Z"
+          }
+        }
+      },
+      "WellnessDataRequest": {
+        "type": "object",
+        "properties": {
+          "patient-first-name": {
+            "type": "string",
+            "description": "The Patient's first name",
+            "example": "Billy"
+          },
+          "risk-result": {
+            "$ref": "#/components/schemas/ResultItem"
+          },
+          "my-goals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "lose weight"
+            ]
+          },
+          "next-visit": {
+            "type": "integer",
+            "description": "Months to next visit",
+            "example": 6
+          },
+          "my-steps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": [
+              "eat more fruit"
+            ]
+          },
+          "interventions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Intervention"
+            }
+          }
+        }
+      },
+      "ResultItem": {
+        "type": "object",
+        "properties": {
+          "algorithm-common-name": {
+            "type": "string",
+            "description": "A user friendly description of the algorithm used.",
+            "example": "General (male) Algorithm"
+          },
+          "algorithm-type": {
+            "type": "string",
+            "description": "The algorithm type used to make the calculation.",
+            "example": "general"
+          },
+          "clinically-high": {
+            "type": "integer",
+            "description": "If 1, indicates that the subject has a clinically high risk of CVD and that the current algorithm is not appropriate to calculate an exact risk for them.",
+            "example": 0
+          },
+          "major-version": {
+            "type": "integer",
+            "description": "The major version of the algorithm used to make the calculation.",
+            "example": 1
+          },
+          "minor-version": {
+            "type": "integer",
+            "description": "The minor version of the algorithm used to make the calculation.",
+            "example": 0
+          },
+          "revision": {
+            "type": "integer",
+            "description": "The revision of the algorithm used to make the calculation.",
+            "example": 0
+          },
+          "transaction-id": {
+            "type": "string",
+            "description": "A unique identifier for the calculation, used to refer back to the stored data in the service.",
+            "example": "9A610769-6681-4A33-9624-72701E571E27"
+          },
+          "input": {
+            "$ref": "#/components/schemas/RiskItem"
+          },
+          "result-exact": {
+            "type": "number",
+            "description": "The exact result generated from the algorithm."
+          },
+          "result": {
+            "type": "number",
+            "description": "A rounded result from the algorithm, appropriate to the algorithm used. Usually rounded to the nearest whole number."
+          },
+          "reference": {
+            "type": "string",
+            "description": "A plain text description of the reference to the algorithm implementation documentation where available."
+          },
+          "algorithm-nomenclature": {
+            "type": "string",
+            "description": "The name of the algorithm as defined by official documentation."
+          },
+          "signature": {
+            "type": "string",
+            "description": "A base64 encoded hash of the response data."
+          },
+          "plain-language-result": {
+            "type": "string",
+            "description": "A simple description of what the result means."
+          },
+          "heart-age": {
+            "deprecated": true,
+            "type": "integer",
+            "description": "The equivalent age at which a person with ideal cardiovascular health would be with the same risk as the submitted values.",
+            "example": 40
+          },
+          "risk-trajectory": {
+            "deprecated": true,
+            "type": "object",
+            "properties": {
+              "ages": {
+                "description": "the array of ages for which the trajectory has been calculated",
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                },
+                "example": [
+                  40,
+                  41,
+                  42,
+                  43,
+                  44,
+                  45,
+                  46,
+                  47,
+                  48,
+                  49,
+                  50,
+                  51,
+                  52,
+                  53,
+                  54,
+                  55,
+                  56,
+                  57,
+                  58,
+                  59,
+                  60
+                ]
+              },
+              "actual-trajectory": {
+                "description": "the values that correspond to the risk at each age for the submitted values",
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "example": [
+                  40,
+                  41,
+                  42,
+                  43,
+                  44,
+                  45,
+                  46,
+                  47,
+                  48,
+                  49,
+                  50,
+                  51,
+                  52,
+                  53,
+                  54,
+                  55,
+                  56,
+                  57,
+                  58,
+                  59,
+                  60
+                ]
+              },
+              "ideal-trajectory": {
+                "description": "the values that correspond to the risk at each age for a person with ideal inputs",
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "example": [
+                  38,
+                  39,
+                  40,
+                  41,
+                  42,
+                  43,
+                  44,
+                  45,
+                  46,
+                  47,
+                  48,
+                  49,
+                  50,
+                  51,
+                  52,
+                  53,
+                  54,
+                  55,
+                  56,
+                  57,
+                  58
+                ]
+              },
+              "modifiable-trajectory": {
+                "description": "the values that correspond to the risk at each age for a person with modifiable inputs",
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "example": [
+                  39,
+                  40,
+                  41,
+                  42,
+                  43,
+                  44,
+                  45,
+                  46,
+                  47,
+                  48,
+                  49,
+                  50,
+                  51,
+                  52,
+                  53,
+                  54,
+                  55,
+                  56,
+                  57,
+                  58,
+                  59
+                ]
+              }
+            }
+          },
+          "advice": {
+            "deprecated": true,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "description": "a unique key which identifies this advice scenario"
+                },
+                "description": {
+                  "description": "the description of the advice being given",
+                  "type": "string"
+                },
+                "label": {
+                  "description": "a short summary of the advice to display on a chart label",
+                  "type": "string"
+                },
+                "modified-relative-risk-percentage": {
+                  "description": "the relative risk expressed as a percentage",
+                  "type": "number"
+                },
+                "modified-absolute-risk-difference": {
+                  "description": "the relative risk of the advice",
+                  "type": "number"
+                },
+                "trajectory": {
+                  "description": "risk values associated with each age",
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "snomed": {
+            "description": "snomed CT codes",
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "HMACApiKey": [],
+      "HMACTimestamp": [],
+      "HMACToken": [],
+      "HMACSignature": []
+    }
+  ]
+}

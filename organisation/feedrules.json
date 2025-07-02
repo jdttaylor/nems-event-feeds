@@ -1,0 +1,113 @@
+[
+  {
+    "topic": "provideridentity/organisation/organisation/{verb}/0.1.0/{organisation_type}",
+    "topicParameters": {
+      "organisation_type": {
+        "schema": {
+          "type": "string",
+          "enum": [
+            "001",
+            "003",
+            "006",
+            "007",
+            "008",
+            "009",
+            "027",
+            "028",
+            "999"
+          ]
+        },
+        "rule": {
+          "name": "organisation_type",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "001",
+            "003",
+            "006",
+            "007",
+            "008",
+            "009",
+            "027",
+            "028",
+            "999"
+          ]
+        }
+      },
+      "verb": {
+        "schema": {
+          "type": "string",
+          "enum": [
+            "created",
+            "updated"
+          ]
+        },
+        "rule": {
+          "name": "verb",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "created",
+            "updated"
+          ]
+        }
+      }
+    },
+    "eventName": "Organisation",
+    "eventVersion": "0.1.0",
+    "messageName": "Organisation",
+    "hasPayload": true,
+    "payload": {
+      "dormantOrganisationIDs": {
+        "type": "array",
+        "subType": "string",
+        "name": "dormantOrganisationIDs",
+        "rule": {
+          "name": "dormantOrganisationIDs",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "G00011-K",
+            "G00012-K",
+            "G00013-K"
+          ]
+        }
+      },
+      "organisationID": {
+        "description": "Organisation ID",
+        "type": "string",
+        "rule": {
+          "name": "organisationID",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "G00010-K",
+            "G00009-K",
+            "G00008-K"
+          ]
+        }
+      },
+      "resourceVersion": {
+        "description": "Resource Version",
+        "type": "string",
+        "rule": {
+          "name": "resourceVersion",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "static",
+          "static":"1.4.10",
+          "description": "Resource Version"
+        }
+      }
+    },
+    "publishSettings": {
+      "count": 0,
+      "interval": 1000,
+      "delay": 0
+    }
+  }
+]
