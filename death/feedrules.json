@@ -125,7 +125,8 @@
     "publishSettings": {
       "count": 0,
       "interval": 1000,
-      "delay": 0
+      "delay": 0,
+      "count": 10
     },
     "messageSettings": {
        "userProperties": {

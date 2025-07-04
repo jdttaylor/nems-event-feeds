@@ -1,6 +1,6 @@
 {
   "name": "Birth",
-  "type": "asyncapi_feed",
+  "type": "default_feed",
   "feedView": "default",
   "description": "This is an event notifying that a patient has been born.",
   "img": "https://cdn-icons-png.flaticon.com/128/15317/15317018.png",

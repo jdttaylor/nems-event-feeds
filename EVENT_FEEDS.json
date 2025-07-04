@@ -26,5 +26,18 @@
   "tags": "nems, healthcare, hira",
   "lastUpdated": "2025-06-05T03:45:31.353Z",
   "topic": "demographics/patient/death/{verb}/0.1.0/{district}/{domicle}/{gp_practice}"
+},
+{
+  "name": "Birth",
+  "type": "default_feed",
+  "feedView": "default",
+  "description": "This is an event notifying that a patient has been born.",
+  "img": "https://cdn-icons-png.flaticon.com/128/15317/15317018.png",
+  "contributor": "James Taylor",
+  "github": "",
+  "domain": "heathcare",
+  "tags": "nems, healthcare, hira",
+  "lastUpdated": "2025-06-05T03:45:31.353Z",
+  "topic": "demographics/patient/birth/{verb}/0.1.0/{district}/{domicle}/{gp_practice}"
 }
 ]
