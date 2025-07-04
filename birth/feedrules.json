@@ -1,6 +1,6 @@
 [
   {
-    "topic": "demographics/patient/death/{verb}/0.1.0/{district}/{domicle}/{gp_practice}",
+    "topic": "demographics/patient/birth/{verb}/0.1.0/{district}/{domicle}/{gp_practice}",
     "topicParameters": {
       "gp_practice": {
         "schema": {
@@ -91,9 +91,9 @@
         }
       }
     },
-    "eventName": "DeathNotice",
+    "eventName": "BirthNotice",
     "eventVersion": "0.1.0",
-    "messageName": "DeathNotice",
+    "messageName": "BirthNotice",
     "hasPayload": false,
     "payload": {
       "callbackURL": {
@@ -108,13 +108,13 @@
           "url": "https://api.hip-uat.digital.health.nz/fhir/nhi/v1/Patient/"
         }
       },
-      "deathDate": {
+      "birthDate": {
         "format": "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
-        "description": "Death date following the FHIR primitive date data type definition. This can be the full date or partial date of year and month",
+        "description": "Birth date following the FHIR primitive date data type definition. This can be the full date or partial date of year and month",
         "optional": false,
         "type": "string",
         "rule": {
-          "name": "deathDate",
+          "name": "birthDate",
           "type": "string",
           "group": "NEMSRules",
           "rule": "deathDate",
