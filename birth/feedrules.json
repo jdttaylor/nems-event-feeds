@@ -132,5 +132,139 @@
           "source": "HIP"
           } 
       }
+    },
+    {
+    "topic": "demographics/patient/birth/new/0.1.0/{district}/{domicle}/{gp_practice}",
+    "topicParameters": {
+      "gp_practice": {
+        "schema": {
+          "type": "string"
+        },
+        "rule": {
+          "name": "gp_practice",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "F3T878-K",
+            "F3S263-A",
+            "F3U195-J",
+            "F3S019-A"
+          ]
+        }
+      },
+      "district": {
+        "schema": {
+          "type": "string"
+        },
+        "rule": {
+          "name": "district",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "G00026-A",
+            "G00013-C",
+            "G00011-K",
+            "G00012-A",
+            "G00027-C",
+            "G00028-E",
+            "G00031-E",
+            "G00029-G",
+            "G00030-C",
+            "G00032-G",
+            "G00033-J",
+            "G00035-B",
+            "G00036-D",
+            "G00006-F",
+            "G00037-F",
+            "G00038-H",
+            "G00039-K",
+            "G00005-D",
+            "G00025-K",
+            "G02328-E"
+          ]
+        }
+      },
+      "verb": {
+        "schema": {
+          "type": "string",
+          "enum": [
+            "edit",
+            "new",
+            "delete"
+          ]
+        },
+        "rule": {
+          "name": "verb",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "edit",
+            "new",
+            "delete"
+          ]
+        }
+      },
+      "domicle": {
+        "schema": {
+          "type": "string"
+        },
+        "rule": {
+          "name": "domicile",
+          "type": "string",
+          "group": "StringRules",
+          "rule": "enum",
+          "enum": [
+            "2882",
+            "3031",
+            "3262",
+            "0215"
+          ]
+        }
+      }
+    },
+    "eventName": "BirthNotice - New",
+    "eventVersion": "0.1.0",
+    "messageName": "BirthNotice",
+    "hasPayload": false,
+    "payload": {
+      "callbackURL": {
+        "schema" : {
+          "type": "string"
+        },
+        "rule": {
+          "name": "callbackURL",
+          "type": "string",
+          "group": "NEMSRules",
+          "rule": "callbackURL",
+          "url": "https://api.hip-uat.digital.health.nz/fhir/nhi/v1/Patient/"
+        }
+      },
+      "birthDate": {
+        "format": "([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?",
+        "description": "Birth date following the FHIR primitive date data type definition. This can be the full date or partial date of year and month",
+        "optional": false,
+        "type": "string",
+        "rule": {
+          "name": "birthDate",
+          "type": "string",
+          "group": "NEMSRules",
+          "rule": "deathDate",
+          "years": "105"
+        }
+      }
+    },
+    "publishSettings": {
+      "count": 0,
+      "interval": 1000,
+      "delay": 0
+    },
+    "messageSettings": {
+       "userProperties": {
+          "source": "HIP"
+          } 
+      }
     }
 ]
