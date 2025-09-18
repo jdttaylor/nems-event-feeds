@@ -1,12 +1,11 @@
 [
 {
   "version": "1.0",
-  "feedType": "asyncapi_feed",
-  "type": "asyncapi_feed",
+  "type": "default_feed",
   "feedView": "default",
   "name": "Organisation",
   "description": "Changes in a organisation",
-  "img": "https://cdn-icons-png.flaticon.com/128/15317/15317018.png",
+  "img": "https://cdn-icons-png.flaticon.com/128/3209/3209074.png",
   "contributor": "James Taylor",
   "github": "",
   "domain": "healthcare",
@@ -16,7 +15,7 @@
 },
 {
   "name": "Death",
-  "type": "asyncapi_feed",
+  "type": "default_feed",
   "feedView": "default",
   "description": "This is an event notifying that a patient has deceased.",
   "img": "https://cdn-icons-png.flaticon.com/128/2854/2854182.png",
